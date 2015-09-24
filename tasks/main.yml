@@ -3,18 +3,6 @@
   apt: "pkg=gearman state=present update_cache=yes cache_valid_time=3600"
   sudo: yes
 
-- name: "Populate gearman defaults"
-  template: "src=etc/default/gearman-job-server dest=/etc/default/gearman-job-server owner=root group=root"
-  notify:
-    - "Restart gearman"
-  sudo: yes
-
-- name: "Update gearman upstart"
-  template: "src=etc/init/gearman-job-server.conf dest=/etc/init/gearman-job-server.conf owner=root group=root"
-  notify:
-    - "Restart gearman"
-  sudo: yes
-
 - name: "Ensure that gearman is enabled"
   service: "name=gearman-job-server enabled=yes"
   sudo: yes
