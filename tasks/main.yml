@@ -1,6 +1,11 @@
 ---
 
-- name: "Install gearman packages"
+- name: os-specific vars
+  include_vars: "{{ansible_os_family}}.yml"
+  tags:
+      - always
+      
+- name: "Install Debian gearman packages"
   apt:
     pkg: "{{ item }}"
     state: "present"
@@ -8,21 +13,27 @@
     cache_valid_time: "3600"
     install_recommends: "no"
   with_items:
-    - "gearman-job-server"
-    - "gearman-tools"
-  become: "yes"
-
+     "{{ gearman_packages }}"
+  when: ansible_os_family == 'Debian'
+  
+- name: "Install Enterprise Linux gearman packages"
+  yum:
+    name: "{{ item }}"
+    state: "present"
+  with_items:
+   "{{ gearman_packages }}"
+  when: ansible_os_family == "RedHat"
+  
 - name: "Populate gearman defaults"
   template:
-    src: "etc/default/gearman-job-server"
-    dest: "/etc/default/gearman-job-server"
+    src: "{{ gearman_config_src }}"
+    dest: "{{ gearman_config_dest }}"
     owner: "root"
     group: "root"
   notify:
     - "Restart gearman"
-  become: "yes"
 
-- name: "Install upstart service"
+- name: "Install Gearman service"
   template:
     src: "etc/init/gearman-job-server.conf"
     dest: "/etc/init/gearman-job-server.conf"
@@ -30,14 +41,13 @@
     group: "root"
   notify:
     - "Restart gearman"
-  become: "yes"
-
+  when: ansible_os_family == "Debian"
+  
 - name: "Ensure that gearman is enabled and running"
   service:
-    name: "gearman-job-server"
+    name: "{{ gearman_service }}"
     enabled: "yes"
     state: "started"
-  become: "yes"
-
+  
 - name: "Flush handlers"
   meta: flush_handlers

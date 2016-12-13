@@ -1,0 +1,2 @@
+### Settings for gearmand
+OPTIONS="--listen={{ gearman_bind_address }} --port={{ gearman_bind_port }} {{ gearman_queue_parameters }}"
