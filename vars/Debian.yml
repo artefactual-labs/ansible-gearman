@@ -1,0 +1,4 @@
+gearman_packages: ["gearman-job-server", "gearman-tools"]
+gearman_config_src: "etc/default/gearman-job-server"
+gearman_config_dest: "/etc/default/gearman-job-server"
+gearman_service: "gearman-job-server"
