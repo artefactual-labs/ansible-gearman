@@ -5,4 +5,10 @@
     name: "gearman-job-server"
     state: "restarted"
   become: "yes"
-  ignore_errors: yes
+
+- name: "Restart gearmand"
+  service:
+    name: "gearmand"
+    state: "restarted"
+  become: "yes"
+
