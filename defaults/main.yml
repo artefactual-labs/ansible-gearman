@@ -1,6 +1,6 @@
 ---
 
-gearman_bind_address: "0.0.0.0"
+gearman_bind_address: "127.0.0.1"
 gearman_bind_port: "4730"
 
 # It is recommended to override the following variable and use a reliable queue
