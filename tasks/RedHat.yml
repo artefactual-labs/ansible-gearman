@@ -1,0 +1,21 @@
+---
+- name: "Add epel-release repository"
+  yum:
+    name: "epel-release"
+    state: "latest"
+
+- name: "Enable epel repo"
+  ini_file:
+    path: /etc/yum.repos.d/epel.repo
+    section: epel
+    option: enabled
+    value: 1
+
+- name: "Install gearmand package"
+  yum: "name=gearmand state=latest update_cache=yes"
+
+- name: "Write sysconfig/gearmand"
+  template: "src=etc/sysconfig/gearmand.j2 dest=/etc/sysconfig/gearmand owner=root group=root mode=0644"
+  notify:
+    - "Restart gearmand"
+
