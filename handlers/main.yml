@@ -1,8 +1,12 @@
 ---
 
+# Note: become is being used here due to a bug in Ansible 2.2.0
+# https://github.com/ansible/ansible/issues/17490
+# become should be removed when 2.2.1 is out.
+
 - name: "Restart gearman"
   service:
-    name: "gearman-job-server"
+    name: "{{ gearman_service }}"
     state: "restarted"
-  become: "yes"
+  become: true
   ignore_errors: yes
