@@ -19,3 +19,7 @@
   notify:
     - "Restart gearmand"
 
+- name: "Ensure that gearman is enabled"
+  service:
+    name: "gearmand"
+    enabled: "yes"
