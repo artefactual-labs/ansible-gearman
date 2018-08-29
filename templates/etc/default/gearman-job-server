@@ -16,4 +16,12 @@
 # Missing examples for memcache persitent queue store...
 
 # Parameters to pass to gearmand.
+{% if ansible_distribution_release != "bionic" %}
 PARAMS="--listen={{ gearman_bind_address }} --port={{ gearman_bind_port }} {{ gearman_queue_parameters }}"
+{% else %}
+PARAMS="--listen={{ gearman_bind_address }} \
+ --port={{ gearman_bind_port }} \
+ --daemon \
+ --log-file=/var/log/gearman-job-server/gearmand.log \
+  {{ gearman_queue_parameters }}"
+{% endif %}

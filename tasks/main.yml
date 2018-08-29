@@ -31,6 +31,8 @@
   notify:
     - "Restart gearman"
   become: "yes"
+  when:
+    - ansible_service_mgr == "upstart"
 
 - name: "Ensure that gearman is enabled and running"
   service:
