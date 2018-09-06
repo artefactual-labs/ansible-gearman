@@ -1,6 +1,6 @@
 # ansible-gearman
 
-An ansible role for deploying gearman.
+An Ansible role for deploying Gearman.
 
 Tested with Ubuntu 16.04, 18.04 and CentOS 7.x.
 
