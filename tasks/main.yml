@@ -14,7 +14,6 @@
     install_recommends: "no"
   with_items:
      "{{ gearman_packages }}"
-  become: "yes"
   when: ansible_os_family == 'Debian'
 
 - name: "Install Enterprise Linux gearman packages"
@@ -23,7 +22,6 @@
     state: "present"
   with_items:
    "{{ gearman_packages }}"
-  become: "yes"
   when: ansible_os_family == "RedHat"
 
 - name: "Populate gearman defaults"
@@ -34,7 +32,6 @@
     group: "root"
   notify:
     - "Restart gearman"
-  become: "yes"
 
 - name: "Install Gearman service"
   template:
@@ -44,7 +41,6 @@
     group: "root"
   notify:
     - "Restart gearman"
-  become: "yes"
   when:
     - ansible_service_mgr == "upstart"
 
@@ -53,7 +49,6 @@
     name: "{{ gearman_service }}"
     enabled: "yes"
     state: "started"
-  become: "yes"
-  
+
 - name: "Flush handlers"
   meta: flush_handlers
