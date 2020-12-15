@@ -7,21 +7,17 @@
 
 - name: "Install Debian Gearman packages"
   apt:
-    pkg: "{{ item }}"
+    pkg: "{{ gearman_packages }}"
     state: "present"
     update_cache: "yes"
     cache_valid_time: "3600"
     install_recommends: "no"
-  with_items:
-    "{{ gearman_packages }}"
   when: ansible_os_family == 'Debian'
 
 - name: "Install Enterprise Linux Gearman packages"
   yum:
-    name: "{{ item }}"
+    name: "{{ gearman_packages }}"
     state: "present"
-  with_items:
-    "{{ gearman_packages }}"
   when: ansible_os_family == "RedHat"
 
 - name: "Populate gearman defaults"
