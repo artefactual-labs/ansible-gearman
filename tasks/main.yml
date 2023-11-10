@@ -14,10 +14,17 @@
     install_recommends: "no"
   when: ansible_os_family == 'Debian'
 
-- name: "Enable crb repo on CentOS/Rocky >= 9"
+- name: "Enable crb repo on CentOS/Rocky/Almalinux >= 9"
   command: "dnf config-manager --set-enabled crb"
   when:
-    - ansible_distribution in ['CentOS','Rocky']
+    - ansible_distribution in ['CentOS','Rocky','AlmaLinux']
+    - ansible_facts['distribution_major_version'] >= "9"
+    - install_rpm_repositories|bool
+
+- name: "Enable crb repo on OracleLinux >= 9"
+  command: "dnf config-manager --set-enabled ol9_codeready_builder"
+  when:
+    - ansible_distribution in ['OracleLinux']
     - ansible_facts['distribution_major_version'] >= "9"
     - install_rpm_repositories|bool
 
