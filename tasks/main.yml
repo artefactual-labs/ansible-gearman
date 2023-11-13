@@ -14,32 +14,59 @@
     install_recommends: "no"
   when: ansible_os_family == 'Debian'
 
-- name: "Enable crb repo on CentOS/Rocky/Almalinux >= 9"
-  command: "dnf config-manager --set-enabled crb"
+- name: Install epel-release but disable epel repos
+  block:
+    - name: Install epel-release
+      dnf:
+        name: epel-release
+    - name: Disable epel repos
+      community.general.ini_file:
+        path: "{{ item.path }}"
+        section: "{{ item.section }}"
+        option: enabled
+        value: 0
+        no_extra_spaces: true
+        owner: root
+        group: root
+        mode: 0644
+        backup: true
+      loop:
+        - path: /etc/yum.repos.d/epel.repo
+          section: epel
+        - path: /etc/yum.repos.d/epel-cisco-openh264.repo
+          section: epel-cisco-openh264
   when:
-    - ansible_distribution in ['CentOS','Rocky','AlmaLinux']
+    - ansible_distribution in ['CentOS','Rocky','AlmaLinux','RedHat']
     - ansible_facts['distribution_major_version'] >= "9"
-    - install_rpm_repositories|bool
+    - gearman_configure_rpm_repositories|bool
 
-- name: "Enable crb repo on OracleLinux >= 9"
-  command: "dnf config-manager --set-enabled ol9_codeready_builder"
-  when:
-    - ansible_distribution in ['OracleLinux']
-    - ansible_facts['distribution_major_version'] >= "9"
-    - install_rpm_repositories|bool
+# - name: "Enable crb repo on CentOS/Rocky/Almalinux >= 9"
+#   command: "dnf config-manager --set-enabled crb"
+#   when:
+#     - ansible_distribution in ['CentOS','Rocky','AlmaLinux']
+#     - ansible_facts['distribution_major_version'] >= "9"
+#     - gearman_configure_rpm_repositories|bool
 
-- name: "Enable crb repo on RHEL >= 9"
-  command: "subscription-manager repos --enable=codeready-builder-for-rhel-9-x86_64-rpms"
-  when:
-    - ansible_distribution in ['RedHat']
-    - ansible_facts['distribution_major_version'] >= "9"
-    - install_rpm_repositories|bool
+# - name: "Enable crb repo on OracleLinux >= 9"
+#   command: "dnf config-manager --set-enabled ol9_codeready_builder"
+#   when:
+#     - ansible_distribution in ['OracleLinux']
+#     - ansible_facts['distribution_major_version'] >= "9"
+#     - gearman_configure_rpm_repositories|bool
 
-- name: "Install Enterprise Linux Gearman packages"
+# - name: "Enable crb repo on RHEL >= 9"
+#   command: "subscription-manager repos --enable=codeready-builder-for-rhel-9-x86_64-rpms"
+#   when:
+#     - ansible_distribution in ['RedHat']
+#     - ansible_facts['distribution_major_version'] >= "9"
+#     - gearman_configure_rpm_repositories|bool
+
+- name: "Install Gearman packages"
   yum:
-    name: "{{ gearman_packages }}"
-    state: "present"
-  when: ansible_os_family in ['RedHat','Rocky']
+    name: "{{ item.name }}"
+    enablerepo: "{{ item.enablerepo | default(omit) }}"
+  loop: "{{ gearman_packages }}"
+  when: ansible_os_family == 'RedHat'
 
 - name: "Populate gearman defaults"
   template:
@@ -47,6 +74,8 @@
     dest: "{{ gearman_config_dest }}"
     owner: "root"
     group: "root"
+    mode: "0644"
+    backup: true
   notify:
     - "Restart gearman"
 

@@ -7,6 +7,6 @@ gearman_bind_port: "4730"
 # as memcached, e.g. --queue-type=libmemcached --libmemcached-servers=127.0.0.1:11211
 gearman_queue_parameters: "--queue-type=builtin"
 
-# Change to false if you don't want to install rpm repos
+# Change to false if you don't want to configure rpm repository
 # Useful in offline or rpm repos controlled environments
-install_rpm_repositories: "true"
+gearman_configure_rpm_repositories: "true"
