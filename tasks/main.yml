@@ -14,6 +14,16 @@
     install_recommends: "no"
   when: ansible_os_family == 'Debian'
 
+# In Rocky 9:
+# - Ref. https://wiki.rockylinux.org/rocky/repo/
+# - gearmand package is provided by epel repo
+#   (epel repo is not configured by default)
+# - gearnand depends on libmemcached-awesome, which is provided by crb repo
+#   (crb repo is configured in the distro but disabled)
+# - We should be able to just run yum with --enablerepo option to 
+#   temporarily enable the repos without configuring them to be enabled
+#   in the /etc/yum.repos.d/ config files
+
 - name: Install epel-release but disable epel repos
   block:
     - name: Install epel-release

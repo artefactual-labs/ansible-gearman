@@ -1,7 +1,8 @@
 gearman_packages: 
   - name: gearmand
-    enablerepo: epel
-
+    enablerepo: 
+      - epel
+      - crb
 gearman_config_src: "etc/sysconfig/gearmand"
 gearman_config_dest: "/etc/sysconfig/gearmand"
 gearman_service: "gearmand"
